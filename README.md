@@ -147,6 +147,18 @@ vercel-local-cron run
 
 This is what gets executed when you run `npm run dev` after installation.
 
+Any arguments after `run` are passed through to `next dev`, so you can use
+Turbopack, a custom port, or any other `next dev` flag without losing cron
+scheduling (port detection picks up custom ports automatically):
+
+```bash
+vercel-local-cron run --turbopack
+vercel-local-cron run -p 3001
+
+# npm-script style (the `--` separator is also accepted and stripped):
+npm run dev -- --turbopack
+```
+
 ### `help`
 
 Show help message with available commands:

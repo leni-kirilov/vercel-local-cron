@@ -18,18 +18,24 @@ Usage:
 Commands:
   install     Install and configure vercel-local-cron in your project
   run         Run the cron scheduler with Next.js dev server
+              (arguments after "run" are passed through to "next dev")
   help        Show this help message
 
 Examples:
   npx vercel-local-cron install
   vercel-local-cron run
+  vercel-local-cron run --turbopack
+  vercel-local-cron run -p 3001
 `);
 }
 
 /**
  * Run the dev server with cron scheduling
+ *
+ * @param nextDevArgs - extra arguments passed through to `next dev`
+ *   (e.g. `--turbopack`, `-p 3001`)
  */
-export async function runDev(): Promise<void> {
+export async function runDev(nextDevArgs: string[] = []): Promise<void> {
   console.log('🚀 Starting Vercel Local Cron...\n');
 
   try {
@@ -50,7 +56,7 @@ export async function runDev(): Promise<void> {
 
     // Start Next.js dev server
     console.log('📦 Starting Next.js dev server...\n');
-    const nextProcess = spawn('npx', ['next', 'dev'], {
+    const nextProcess = spawn('npx', ['next', 'dev', ...nextDevArgs], {
       stdio: ['inherit', 'pipe', 'pipe'],
       shell: true,
     });
@@ -131,7 +137,9 @@ export async function runCli(): Promise<void> {
       await installCommand();
       break;
     case 'run':
-      await runDev();
+      // Everything after `run` is forwarded to `next dev`. A literal `--`
+      // separator is allowed and stripped (npm-script style: `pnpm dev -- --turbopack`).
+      await runDev(process.argv.slice(3).filter((arg) => arg !== '--'));
       break;
     case 'help':
     case '--help':
