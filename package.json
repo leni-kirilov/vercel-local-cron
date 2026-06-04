@@ -1,6 +1,6 @@
 {
   "name": "vercel-local-cron",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Run Vercel cron jobs locally during Next.js development",
   "type": "module",
   "main": "./dist/index.js",
@@ -21,7 +21,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/cli/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
+    "test": "node --test"
   },
   "keywords": [
     "vercel",

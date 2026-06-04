@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { config } from 'dotenv';
+import { parseRunArgs } from './args.js';
 import { parseVercelConfig } from '../config/parser.js';
 import { detectPort, getPortFromEnv } from '../port/detector.js';
 import { CronScheduler, setupShutdownHandlers } from '../scheduler/index.js';
@@ -137,9 +138,7 @@ export async function runCli(): Promise<void> {
       await installCommand();
       break;
     case 'run':
-      // Everything after `run` is forwarded to `next dev`. A literal `--`
-      // separator is allowed and stripped (npm-script style: `pnpm dev -- --turbopack`).
-      await runDev(process.argv.slice(3).filter((arg) => arg !== '--'));
+      await runDev(parseRunArgs(process.argv));
       break;
     case 'help':
     case '--help':
